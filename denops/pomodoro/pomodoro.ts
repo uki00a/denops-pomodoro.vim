@@ -24,4 +24,3 @@ export class Pomodoro {
     await this.#notifier.notify("DONE", "DONE");
   }
 }
-

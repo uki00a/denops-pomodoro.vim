@@ -9,15 +9,15 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function createTimer(
-  max = 25 * 60 * 1000,
+  duration = 25 * 60 * 1000,
   interval = 1000,
 ): Timer {
   async function* start() {
-    let current = 0;
-    while (current < max) {
+    let remaining = duration;
+    while (remaining > 0) {
+      yield remaining;
       await sleep(interval);
-      current += interval;
-      yield current;
+      remaining -= interval;
     }
   }
 

@@ -1,4 +1,4 @@
-interface Timer {
+export interface Timer {
   start(): AsyncIterableIterator<number>;
 }
 

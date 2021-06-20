@@ -5,6 +5,7 @@ import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 
 main(async ({ vim }) => {
+  let pomodoro: Pomodor | null = null;
   vim.register({
     async notify() {
       const notifier = createNotifier();
@@ -16,13 +17,25 @@ main(async ({ vim }) => {
       const timer = createTimer();
       const notifier = createNotifier();
       const renderer = createRenderer(vim);
-      const pomodoro = new Pomodoro(timer, notifier, renderer);
+      pomodoro = new Pomodoro(timer, notifier, renderer);
       await pomodoro.start();
+    },
+    stop() {
+      if (pomodoro) {
+        pomodoro.stop();
+      }
+    },
+    resume() {
+      if (pomodoro) {
+        pomodoro.resume();
+      }
     },
   });
 
   await vim.execute([
     `command! DenopsNotify call denops#notify("${vim.name}", "notify", [])`,
     `command! PomodoroStart call denops#notify("${vim.name}", "start", [])`,
+    `command! PomodoroStop call denops#notify("${vim.name}", "stop", [])`,
+    `command! PomodoroResume call denops#notify("${vim.name}", "resume", [])`,
   ]);
 });

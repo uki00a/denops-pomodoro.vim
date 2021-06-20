@@ -7,13 +7,13 @@ import { createTimer } from "./timer.ts";
 main(async ({ vim }) => {
   let pomodoro: Pomodoro | null = null;
   vim.register({
-    async notify() {
+    async notify(): Promise<void> {
       const notifier = createNotifier();
       const title = "Test";
       const message = "Hello!";
       await notifier.notify(title, message);
     },
-    async start() {
+    async start(): Promise<void> {
       if (pomodoro) {
         pomodoro.stop();
       }
@@ -23,15 +23,17 @@ main(async ({ vim }) => {
       pomodoro = new Pomodoro(timer, notifier, renderer);
       await pomodoro.start();
     },
-    stop() {
+    stop(): Promise<void> {
       if (pomodoro) {
         pomodoro.stop();
       }
+      return Promise.resolve();
     },
-    resume() {
+    resume(): Promise<void> {
       if (pomodoro) {
         pomodoro.resume();
       }
+      return Promise.resolve();
     },
   });
 

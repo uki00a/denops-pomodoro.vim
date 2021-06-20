@@ -14,10 +14,13 @@ jobs:
     - uses: denoland/setup-deno@main
       with:
         deno-version: "1.10.3"
-    - name: Run lint & fmt
+    - name: Lint & fmt
       run: |
         deno fmt --check
         deno lint
-    - name: Run tests
+    - name: Type check
+      run: |
+        deno cache --unstable denops/pomodoro/app.ts
+    - name: Tests
       run: |
         deno test --unstable --allow-env=DENOPS_TEST_VIM,DENOPS_TEST_NVIM,DENOPS_PATH ./tests

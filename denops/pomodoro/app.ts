@@ -14,6 +14,9 @@ main(async ({ vim }) => {
       await notifier.notify(title, message);
     },
     async start() {
+      if (pomodoro) {
+        pomodoro.stop();
+      }
       const timer = createTimer();
       const notifier = createNotifier();
       const renderer = createRenderer(vim);

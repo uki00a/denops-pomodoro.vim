@@ -20,4 +20,4 @@ jobs:
         deno lint
     - name: Run tests
       run: |
-        deno test --unstable ./tests
+        deno test --unstable --allow-env=DENOPS_TEST_VIM,DENOPS_TEST_NVIM ./tests

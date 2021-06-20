@@ -5,7 +5,7 @@ import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 
 main(async ({ vim }) => {
-  let pomodoro: Pomodor | null = null;
+  let pomodoro: Pomodoro | null = null;
   vim.register({
     async notify() {
       const notifier = createNotifier();

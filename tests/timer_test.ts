@@ -11,7 +11,7 @@ Deno.test("Timer.start", async () => {
 });
 
 Deno.test("Timer.resume & stop", async () => {
-  let startedAt = new Date();
+  const startedAt = new Date();
   const duration = 3000;
   const interval = 1000;
   const timer = createTimer(duration, interval);

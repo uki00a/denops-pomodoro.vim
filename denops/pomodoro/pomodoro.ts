@@ -23,4 +23,12 @@ export class Pomodoro {
     }
     await this.#notifier.notify("DONE", "DONE");
   }
+
+  stop(): void {
+    this.#timer.stop();
+  }
+
+  resume(): void {
+    this.#timer.resume();
+  }
 }

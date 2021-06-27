@@ -30,10 +30,14 @@ export function createTimer(
       isStarted = false;
       stop();
       currentPromise.resolve({ done: true, value: remaining });
+      currentPromise = deferred<IteratorResult>();
     }
   }
 
   function start(duration: number = initialDuration) {
+    if (timerID) {
+      clearInterval(timerID);
+    }
     isStarted = true;
     remaining = duration;
     timerID = setInterval(timerCallback, interval);

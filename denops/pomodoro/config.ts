@@ -8,7 +8,7 @@ const defaultStepsPerSet = 4;
 const defaultWorkSign = "🍅";
 const defaultShortBreakSign = "😌";
 const defaultLongBreakSign = "😴";
-const defaultPauseSign = "⏸️ ";
+const defaultPauseSign = "⏸️";
 
 export interface Config {
   workMinutes: number;

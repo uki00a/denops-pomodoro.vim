@@ -20,10 +20,7 @@ main(async ({ vim }) => {
         pomodoro.stop();
       }
       const config = await createVimConfig(vim);
-      const timer = createTimer(
-        config.workMinutes * MINUTE,
-        config.shortBreakMinutes * MINUTE,
-      );
+      const timer = createTimer(config.workMinutes * MINUTE);
       const notifier = createNotifier();
       const renderer = createRenderer(vim);
       pomodoro = new Pomodoro(timer, notifier, renderer);

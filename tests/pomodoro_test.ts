@@ -14,6 +14,7 @@ Deno.test("Pomodoro#start", async () => {
     shortBreakSign: "S",
     longBreakSign: "L",
     pauseSign: "P",
+    notificationTitle: "Pomodoro Timer",
     reload: () => Promise.resolve(), // NOOP
   });
   const timer = createTimer(3000, 1000);
@@ -23,25 +24,40 @@ Deno.test("Pomodoro#start", async () => {
 
   await pomodoro.start();
 
-  td.verify(notifier.notify("Work", "DONE"), { times: 2 });
+  {
+    const { calls } = td.explain(notifier.notify);
+    const argsList = calls.map((x) => x.args);
+    const shortBreakMessage =
+      `It's time to take a short break!${config.shortBreakSign}`;
+    const longBreakMessage =
+      `It's time to take a long break!${config.longBreakSign}`;
+    const workMessage = `It's time to work!${config.workSign}`;
+    assertEquals(argsList, [
+      [config.notificationTitle, shortBreakMessage],
+      [config.notificationTitle, workMessage],
+      [config.notificationTitle, shortBreakMessage],
+      [config.notificationTitle, longBreakMessage],
+    ]);
+  }
+
   {
     const { calls } = td.explain(renderer.render);
     const argsList = calls.map((x) => x.args);
     assertEquals(argsList, [
-      ["W", 3000],
-      ["W", 2000],
-      ["W", 1000],
-      ["S", 2000],
-      ["S", 1000],
-      ["W", 3000],
-      ["W", 2000],
-      ["W", 1000],
-      ["S", 2000],
-      ["S", 1000],
-      ["L", 4000],
-      ["L", 3000],
-      ["L", 2000],
-      ["L", 1000],
+      [config.workSign, 3000],
+      [config.workSign, 2000],
+      [config.workSign, 1000],
+      [config.shortBreakSign, 2000],
+      [config.shortBreakSign, 1000],
+      [config.workSign, 3000],
+      [config.workSign, 2000],
+      [config.workSign, 1000],
+      [config.shortBreakSign, 2000],
+      [config.shortBreakSign, 1000],
+      [config.longBreakSign, 4000],
+      [config.longBreakSign, 3000],
+      [config.longBreakSign, 2000],
+      [config.longBreakSign, 1000],
     ]);
   }
 });

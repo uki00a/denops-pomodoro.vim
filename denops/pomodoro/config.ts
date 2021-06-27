@@ -7,9 +7,10 @@ const defaultShortBreakMinutes = 5;
 const defaultLongBreakMinutes = 25;
 const defaultStepsPerSet = 4;
 const defaultWorkSign = "🍅";
-const defaultShortBreakSign = "😌";
+const defaultShortBreakSign = "☕";
 const defaultLongBreakSign = "😴";
 const defaultPauseSign = "⏸️";
+const defaultNotificationTitle = "Pomodoro Timer";
 
 export interface Config {
   workMinutes: number;
@@ -20,6 +21,7 @@ export interface Config {
   shortBreakSign: string;
   longBreakSign: string;
   pauseSign: string;
+  notificationTitle: string;
   reload(): Promise<void>;
 }
 
@@ -57,6 +59,10 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
       "pomodoro_pause_sign",
       defaultPauseSign,
     );
+    const notificationTitle = await vim.g.get(
+      "pomodoro_notification_title",
+      defaultNotificationTitle,
+    );
 
     ensureNumber(workMinutes);
     ensureNumber(shortBreakMinutes);
@@ -66,6 +72,7 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
     ensureString(shortBreakSign);
     ensureString(longBreakSign);
     ensureString(pauseSign);
+    ensureString(notificationTitle);
 
     config.workMinutes = workMinutes * MINUTE;
     config.shortBreakMinutes = shortBreakMinutes * MINUTE;
@@ -75,6 +82,7 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
     config.shortBreakSign = shortBreakSign;
     config.longBreakSign = longBreakSign;
     config.pauseSign = pauseSign;
+    config.notificationTitle = notificationTitle;
   }
 
   const config = {
@@ -87,6 +95,7 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
     shortBreakSign: defaultShortBreakSign,
     longBreakSign: defaultLongBreakSign,
     pauseSign: defaultPauseSign,
+    notificationTitle: defaultNotificationTitle,
   };
 
   await config.reload();

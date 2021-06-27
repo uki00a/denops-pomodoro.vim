@@ -27,8 +27,18 @@ export class Pomodoro {
 
   async start(): Promise<void> {
     for (let i = 0; i < this.#config.stepsPerSet; i++) {
-      await this.#runStep();
+      if (i > 0) {
+        await this.#notify(`It's time to work!${this.#config.workSign}`);
+      }
+      await this.#startWork();
+      await this.#notify(
+        `It's time to take a short break!${this.#config.shortBreakSign}`,
+      );
+      await this.#startShortBreak();
     }
+    await this.#notify(
+      `It's time to take a long break!${this.#config.longBreakSign}`,
+    );
     await this.#startLongBreak();
   }
 
@@ -42,11 +52,6 @@ export class Pomodoro {
     this.#timer.resume();
   }
 
-  async #runStep(): Promise<void> {
-    await this.#startWork();
-    await this.#startShortBreak();
-  }
-
   async #startWork(): Promise<void> {
     this.#round = "work";
     for await (
@@ -54,7 +59,6 @@ export class Pomodoro {
     ) {
       this.#renderCurrentState(remaining);
     }
-    await this.#notifier.notify("Work", "DONE");
   }
 
   async #startShortBreak(): Promise<void> {
@@ -66,7 +70,6 @@ export class Pomodoro {
     ) {
       this.#renderCurrentState(remaining);
     }
-    await this.#notifier.notify("Short break", "DONE");
   }
 
   async #startLongBreak(): Promise<void> {
@@ -78,7 +81,6 @@ export class Pomodoro {
     ) {
       this.#renderCurrentState(remaining);
     }
-    await this.#notifier.notify("Long break", "DONE");
   }
 
   #renderCurrentState(remaining: number): void {
@@ -97,5 +99,12 @@ export class Pomodoro {
       case "pause":
         return this.#config.pauseSign;
     }
+  }
+
+  #notify(message: string): Promise<void> {
+    return this.#notifier.notify(
+      this.#config.notificationTitle,
+      message,
+    );
   }
 }

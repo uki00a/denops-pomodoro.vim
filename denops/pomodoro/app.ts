@@ -4,7 +4,6 @@ import { Pomodoro } from "./pomodoro.ts";
 import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 import { createVimConfig } from "./config.ts";
-import { MINUTE } from "./util.ts";
 
 main(async ({ vim }) => {
   let pomodoro: Pomodoro | null = null;
@@ -20,10 +19,10 @@ main(async ({ vim }) => {
         pomodoro.stop();
       }
       const config = await createVimConfig(vim);
-      const timer = createTimer(config.workMinutes * MINUTE);
+      const timer = createTimer(config.workMinutes);
       const notifier = createNotifier();
       const renderer = createRenderer(vim);
-      pomodoro = new Pomodoro(timer, notifier, renderer);
+      pomodoro = new Pomodoro(config, timer, notifier, renderer);
       await pomodoro.start();
     },
     stop(): Promise<void> {

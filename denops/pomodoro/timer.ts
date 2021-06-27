@@ -1,9 +1,10 @@
 import { deferred } from "./deps.ts";
 
 export interface Timer {
-  start(): AsyncIterableIterator<number>;
+  start(duration?: number): AsyncIterableIterator<number>;
   stop(): void;
   resume(): void;
+  remaining(): number;
 }
 
 interface IteratorResult {
@@ -12,11 +13,11 @@ interface IteratorResult {
 }
 
 export function createTimer(
-  duration = 25 * 60 * 1000,
+  initialDuration = 25 * 60 * 1000,
   interval = 1000,
 ): Timer {
   let timerID: number | null = null;
-  let remaining = duration;
+  let remaining = initialDuration;
   let currentPromise = deferred<IteratorResult>();
   let isStarted = false;
 
@@ -29,10 +30,14 @@ export function createTimer(
       isStarted = false;
       stop();
       currentPromise.resolve({ done: true, value: remaining });
+      currentPromise = deferred<IteratorResult>();
     }
   }
 
-  function start() {
+  function start(duration: number = initialDuration) {
+    if (timerID) {
+      clearInterval(timerID);
+    }
     isStarted = true;
     remaining = duration;
     timerID = setInterval(timerCallback, interval);
@@ -66,6 +71,9 @@ export function createTimer(
     start,
     stop,
     resume,
+    remaining(): number {
+      return remaining;
+    },
   };
 
   return timer;

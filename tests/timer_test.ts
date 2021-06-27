@@ -10,6 +10,18 @@ Deno.test("Timer.start", async () => {
   assertEquals(results, [5000, 4000, 3000, 2000, 1000]);
 });
 
+Deno.test("Timer.start: call multiple times", async () => {
+  const timer = createTimer();
+  const results = [] as number[];
+  for await (const remaining of timer.start(2000)) {
+    results.push(remaining);
+  }
+  for await (const remaining of timer.start(3000)) {
+    results.push(remaining);
+  }
+  assertEquals(results, [2000, 1000, 3000, 2000, 1000]);
+});
+
 Deno.test("Timer.resume & stop", async () => {
   const startedAt = new Date();
   const duration = 3000;
@@ -34,4 +46,15 @@ Deno.test("Timer.resume & stop", async () => {
   assertEquals(results, [3000, 2000, 1000]);
   assertEquals(snapshot, [[3000]]);
   assert(elapsed >= 10_000, `${elapsed} should be greater than 10000`);
+});
+
+Deno.test("Timer.remaining", async () => {
+  const duration = 5000;
+  const interval = 1000;
+  const timer = createTimer(duration, interval);
+  assertEquals(timer.remaining(), duration);
+  const iter = timer.start();
+  await iter.next();
+  timer.stop();
+  assertEquals(timer.remaining(), duration - interval);
 });

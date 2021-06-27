@@ -12,7 +12,10 @@ class VimRenderer implements Renderer {
   }
 
   async render(sign: string, remaining: number): Promise<void> {
-    await this.#vim.g.set("pomodoro_timer_status", sign + " " + makeStatusline(remaining));
+    await this.#vim.g.set(
+      "pomodoro_timer_status",
+      sign + " " + makeStatusline(remaining),
+    );
   }
 }
 

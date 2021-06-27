@@ -50,7 +50,9 @@ export class Pomodoro {
 
   async #startWork(): Promise<void> {
     this.#round = "work";
-    for await (const remaining of this.#timer.start(this.#config.workMinutes * MINUTE)) {
+    for await (
+      const remaining of this.#timer.start(this.#config.workMinutes * MINUTE)
+    ) {
       this.#renderCurrentState(remaining);
     }
     await this.#notifier.notify("Work", "DONE");
@@ -58,7 +60,11 @@ export class Pomodoro {
 
   async #startShortBreak(): Promise<void> {
     this.#round = "short-break";
-    for await (const remaining of this.#timer.start(this.#config.shortBreakMinutes * MINUTE)) {
+    for await (
+      const remaining of this.#timer.start(
+        this.#config.shortBreakMinutes * MINUTE,
+      )
+    ) {
       this.#renderCurrentState(remaining);
     }
     await this.#notifier.notify("Short break", "DONE");
@@ -66,7 +72,11 @@ export class Pomodoro {
 
   async #startLongBreak(): Promise<void> {
     this.#round = "long-break";
-    for await (const remaining of this.#timer.start(this.#config.longBreakMinutes * MINUTE)) {
+    for await (
+      const remaining of this.#timer.start(
+        this.#config.longBreakMinutes * MINUTE,
+      )
+    ) {
       this.#renderCurrentState(remaining);
     }
     await this.#notifier.notify("Long break", "DONE");

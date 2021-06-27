@@ -17,7 +17,7 @@ Deno.test("Pomodoro#start", async () => {
     notificationTitle: "Pomodoro Timer",
     reload: () => Promise.resolve(), // NOOP
   });
-  const timer = createTimer(3000, 1000);
+  const timer = createTimer();
   const renderer = td.object<Renderer>();
   const notifier = td.object<Notifier>();
   const pomodoro = new Pomodoro(config, timer, notifier, renderer);

@@ -52,32 +52,22 @@ export class Pomodoro {
     this.#timer.resume();
   }
 
-  async #startWork(): Promise<void> {
-    this.#round = "work";
-    for await (
-      const remaining of this.#timer.start(this.#config.workMinutes)
-    ) {
-      this.#renderCurrentState(remaining);
-    }
+  #startWork(): Promise<void> {
+    return this.#startRound("work", this.#config.workMinutes);
   }
 
-  async #startShortBreak(): Promise<void> {
-    this.#round = "short-break";
-    for await (
-      const remaining of this.#timer.start(
-        this.#config.shortBreakMinutes,
-      )
-    ) {
-      this.#renderCurrentState(remaining);
-    }
+  #startShortBreak(): Promise<void> {
+    return this.#startRound("short-break", this.#config.shortBreakMinutes);
   }
 
-  async #startLongBreak(): Promise<void> {
-    this.#round = "long-break";
+  #startLongBreak(): Promise<void> {
+    return this.#startRound("long-break", this.#config.longBreakMinutes);
+  }
+
+  async #startRound(round: Round, minutes: number): Promise<void> {
+    this.#round = round;
     for await (
-      const remaining of this.#timer.start(
-        this.#config.longBreakMinutes,
-      )
+      const remaining of this.#timer.start(minutes)
     ) {
       this.#renderCurrentState(remaining);
     }

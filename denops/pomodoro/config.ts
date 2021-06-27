@@ -1,5 +1,6 @@
 import { ensureNumber, ensureString } from "./deps.ts";
 import type { Vim } from "./deps.ts";
+import { MINUTE } from "./util.ts";
 
 const defaultWorkMinutes = 25;
 const defaultShortBreakMinutes = 5;
@@ -66,9 +67,9 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
     ensureString(longBreakSign);
     ensureString(pauseSign);
 
-    config.workMinutes = workMinutes;
-    config.shortBreakMinutes = shortBreakMinutes;
-    config.longBreakMinutes = longBreakMinutes;
+    config.workMinutes = workMinutes * MINUTE;
+    config.shortBreakMinutes = shortBreakMinutes * MINUTE;
+    config.longBreakMinutes = longBreakMinutes * MINUTE;
     config.stepsPerSet = stepsPerSet;
     config.workSign = workSign;
     config.shortBreakSign = shortBreakSign;
@@ -78,9 +79,9 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
 
   const config = {
     reload,
-    workMinutes: defaultWorkMinutes,
-    shortBreakMinutes: defaultShortBreakMinutes,
-    longBreakMinutes: defaultLongBreakMinutes,
+    workMinutes: defaultWorkMinutes * MINUTE,
+    shortBreakMinutes: defaultShortBreakMinutes * MINUTE,
+    longBreakMinutes: defaultLongBreakMinutes * MINUTE,
     stepsPerSet: defaultStepsPerSet,
     workSign: defaultWorkSign,
     shortBreakSign: defaultShortBreakSign,

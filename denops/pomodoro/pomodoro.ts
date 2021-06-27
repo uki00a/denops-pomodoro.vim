@@ -2,7 +2,6 @@ import type { Timer } from "./timer.ts";
 import type { Notifier } from "./notifiers.ts";
 import type { Renderer } from "./renderer.ts";
 import type { Config } from "./config.ts";
-import { MINUTE } from "./util.ts";
 
 type Round = "work" | "short-break" | "long-break" | "pause";
 
@@ -51,7 +50,7 @@ export class Pomodoro {
   async #startWork(): Promise<void> {
     this.#round = "work";
     for await (
-      const remaining of this.#timer.start(this.#config.workMinutes * MINUTE)
+      const remaining of this.#timer.start(this.#config.workMinutes)
     ) {
       this.#renderCurrentState(remaining);
     }
@@ -62,7 +61,7 @@ export class Pomodoro {
     this.#round = "short-break";
     for await (
       const remaining of this.#timer.start(
-        this.#config.shortBreakMinutes * MINUTE,
+        this.#config.shortBreakMinutes,
       )
     ) {
       this.#renderCurrentState(remaining);
@@ -74,7 +73,7 @@ export class Pomodoro {
     this.#round = "long-break";
     for await (
       const remaining of this.#timer.start(
-        this.#config.longBreakMinutes * MINUTE,
+        this.#config.longBreakMinutes,
       )
     ) {
       this.#renderCurrentState(remaining);

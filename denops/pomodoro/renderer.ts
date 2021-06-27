@@ -1,7 +1,7 @@
 import { Vim } from "./deps.ts";
 
 export interface Renderer {
-  render(remaining: number): Promise<void>;
+  render(sign: string, remaining: number): Promise<void>;
 }
 
 class VimRenderer implements Renderer {
@@ -11,8 +11,8 @@ class VimRenderer implements Renderer {
     this.#vim = vim;
   }
 
-  async render(remaining: number): Promise<void> {
-    await this.#vim.g.set("pomodoro_timer_status", makeStatusline(remaining));
+  async render(sign: string, remaining: number): Promise<void> {
+    await this.#vim.g.set("pomodoro_timer_status", sign + " " + makeStatusline(remaining));
   }
 }
 

@@ -1,14 +1,24 @@
-import { ensureNumber } from "./deps.ts";
+import { ensureNumber, ensureString } from "./deps.ts";
 import type { Vim } from "./deps.ts";
 
 const defaultWorkMinutes = 25;
 const defaultShortBreakMinutes = 5;
 const defaultLongBreakMinutes = 25;
+const defaultStepsPerSet = 4;
+const defaultWorkSign = "🍅";
+const defaultShortBreakSign = "😌";
+const defaultLongBreakSign = "😴";
+const defaultPauseSign = "⏸️ ";
 
 export interface Config {
   workMinutes: number;
   shortBreakMinutes: number;
   longBreakMinutes: number;
+  stepsPerSet: number;
+  workSign: string;
+  shortBreakSign: string;
+  longBreakSign: string;
+  pauseSign: string;
   reload(): Promise<void>;
 }
 
@@ -26,14 +36,44 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
       "pomodoro_long_break_minutes",
       defaultLongBreakMinutes,
     );
+    const stepsPerSet = await vim.g.get(
+      "pomodoro_steps_per_set",
+      defaultStepsPerSet,
+    );
+    const workSign = await vim.g.get(
+      "pomodoro_work_sign",
+      defaultWorkSign,
+    );
+    const shortBreakSign = await vim.g.get(
+      "pomodoro_short_break_sign",
+      defaultShortBreakSign,
+    );
+    const longBreakSign = await vim.g.get(
+      "pomodoro_long_break_sign",
+      defaultLongBreakSign,
+    );
+    const pauseSign = await vim.g.get(
+      "pomodoro_pause_sign",
+      defaultPauseSign,
+    );
 
     ensureNumber(workMinutes);
     ensureNumber(shortBreakMinutes);
     ensureNumber(longBreakMinutes);
+    ensureNumber(stepsPerSet);
+    ensureString(workSign);
+    ensureString(shortBreakSign);
+    ensureString(longBreakSign);
+    ensureString(pauseSign);
 
     config.workMinutes = workMinutes;
     config.shortBreakMinutes = shortBreakMinutes;
     config.longBreakMinutes = longBreakMinutes;
+    config.stepsPerSet = stepsPerSet;
+    config.workSign = workSign;
+    config.shortBreakSign = shortBreakSign;
+    config.longBreakSign = longBreakSign;
+    config.pauseSign = pauseSign;
   }
 
   const config = {
@@ -41,6 +81,11 @@ export async function createVimConfig(vim: Vim): Promise<Config> {
     workMinutes: defaultWorkMinutes,
     shortBreakMinutes: defaultShortBreakMinutes,
     longBreakMinutes: defaultLongBreakMinutes,
+    stepsPerSet: defaultStepsPerSet,
+    workSign: defaultWorkSign,
+    shortBreakSign: defaultShortBreakSign,
+    longBreakSign: defaultLongBreakSign,
+    pauseSign: defaultPauseSign,
   };
 
   await config.reload();

@@ -35,3 +35,14 @@ Deno.test("Timer.resume & stop", async () => {
   assertEquals(snapshot, [[3000]]);
   assert(elapsed >= 10_000, `${elapsed} should be greater than 10000`);
 });
+
+Deno.test("Timer.remaining", async () => {
+  const duration = 5000;
+  const interval = 1000;
+  const timer = createTimer(duration, interval);
+  assertEquals(timer.remaining(), duration);
+  const iter = timer.start();
+  await iter.next();
+  timer.stop();
+  assertEquals(timer.remaining(), duration - interval);
+});

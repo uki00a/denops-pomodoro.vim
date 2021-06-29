@@ -5,11 +5,14 @@ import { Pomodoro } from "./pomodoro.ts";
 import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 import { createVimConfig } from "./config.ts";
+import { createVim } from "./vim.ts";
 
 export async function main(denops: Denops): Promise<void> {
   let pomodoro: Pomodoro | null = null;
 
-  denops.dispatcher = {
+  const vim = createVim(denops);
+
+  vim.register({
     async notify(): Promise<void> {
       const notifier = createNotifier();
       const title = "Test";
@@ -20,10 +23,10 @@ export async function main(denops: Denops): Promise<void> {
       if (pomodoro) {
         pomodoro.stop();
       }
-      const config = await createVimConfig(denops, vars.g);
+      const config = await createVimConfig(vim);
       const timer = createTimer(config.workMinutes);
       const notifier = createNotifier();
-      const renderer = createRenderer(denops, vars.g);
+      const renderer = createRenderer(vim);
       pomodoro = new Pomodoro(config, timer, notifier, renderer);
       await pomodoro.start();
     },
@@ -39,9 +42,9 @@ export async function main(denops: Denops): Promise<void> {
       }
       return Promise.resolve();
     },
-  };
+  });
 
-  await execute(denops, [
+  await vim.execute([
     `command! DenopsNotify call denops#notify("${denops.name}", "notify", [])`,
     `command! PomodoroStart call denops#notify("${denops.name}", "start", [])`,
     `command! PomodoroStop call denops#notify("${denops.name}", "stop", [])`,

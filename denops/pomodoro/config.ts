@@ -1,5 +1,5 @@
 import { ensureNumber, ensureString } from "./deps.ts";
-import type { Denops, VariableHelper } from "./deps.ts";
+import type { Vim } from "./vim.ts";
 import { MINUTE } from "./util.ts";
 
 const defaultWorkMinutes = 25;
@@ -26,52 +26,42 @@ export interface Config {
 }
 
 export async function createVimConfig(
-  denops: Denops,
-  vars: VariableHelper,
+  vim: Vim,
 ): Promise<Config> {
   async function reload(): Promise<void> {
-    const workMinutes = await vars.get(
-      denops,
+    const workMinutes = await vim.g.get(
       "pomodoro_work_minutes",
       defaultWorkMinutes,
     );
-    const shortBreakMinutes = await vars.get(
-      denops,
+    const shortBreakMinutes = await vim.g.get(
       "pomodoro_short_break_minutes",
       defaultShortBreakMinutes,
     );
-    const longBreakMinutes = await vars.get(
-      denops,
+    const longBreakMinutes = await vim.g.get(
       "pomodoro_long_break_minutes",
       defaultLongBreakMinutes,
     );
-    const stepsPerSet = await vars.get(
-      denops,
+    const stepsPerSet = await vim.g.get(
       "pomodoro_steps_per_set",
       defaultStepsPerSet,
     );
-    const workSign = await vars.get(
-      denops,
+    const workSign = await vim.g.get(
       "pomodoro_work_sign",
       defaultWorkSign,
     );
-    const shortBreakSign = await vars.get(
-      denops,
+    const shortBreakSign = await vim.g.get(
       "pomodoro_short_break_sign",
       defaultShortBreakSign,
     );
-    const longBreakSign = await vars.get(
-      denops,
+    const longBreakSign = await vim.g.get(
       "pomodoro_long_break_sign",
       defaultLongBreakSign,
     );
-    const pauseSign = await vars.get(
-      denops,
+    const pauseSign = await vim.g.get(
       "pomodoro_pause_sign",
       defaultPauseSign,
     );
-    const notificationTitle = await vars.get(
-      denops,
+    const notificationTitle = await vim.g.get(
       "pomodoro_notification_title",
       defaultNotificationTitle,
     );

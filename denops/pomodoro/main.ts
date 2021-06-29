@@ -1,5 +1,4 @@
 import type { Denops } from "./deps.ts";
-import { execute, vars } from "./deps.ts";
 import { createNotifier } from "./notifiers.ts";
 import { Pomodoro } from "./pomodoro.ts";
 import { createRenderer } from "./renderer.ts";

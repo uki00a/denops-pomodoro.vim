@@ -1,5 +1,5 @@
 import { ensureNumber, ensureString } from "./deps.ts";
-import type { Vim } from "./deps.ts";
+import type { Denops, VariableHelper } from "./deps.ts";
 import { MINUTE } from "./util.ts";
 
 const defaultWorkMinutes = 25;
@@ -25,41 +25,53 @@ export interface Config {
   reload(): Promise<void>;
 }
 
-export async function createVimConfig(vim: Vim): Promise<Config> {
+export async function createVimConfig(
+  denops: Denops,
+  vars: VariableHelper,
+): Promise<Config> {
   async function reload(): Promise<void> {
-    const workMinutes = await vim.g.get(
+    const workMinutes = await vars.get(
+      denops,
       "pomodoro_work_minutes",
       defaultWorkMinutes,
     );
-    const shortBreakMinutes = await vim.g.get(
+    const shortBreakMinutes = await vars.get(
+      denops,
       "pomodoro_short_break_minutes",
       defaultShortBreakMinutes,
     );
-    const longBreakMinutes = await vim.g.get(
+    const longBreakMinutes = await vars.get(
+      denops,
       "pomodoro_long_break_minutes",
       defaultLongBreakMinutes,
     );
-    const stepsPerSet = await vim.g.get(
+    const stepsPerSet = await vars.get(
+      denops,
       "pomodoro_steps_per_set",
       defaultStepsPerSet,
     );
-    const workSign = await vim.g.get(
+    const workSign = await vars.get(
+      denops,
       "pomodoro_work_sign",
       defaultWorkSign,
     );
-    const shortBreakSign = await vim.g.get(
+    const shortBreakSign = await vars.get(
+      denops,
       "pomodoro_short_break_sign",
       defaultShortBreakSign,
     );
-    const longBreakSign = await vim.g.get(
+    const longBreakSign = await vars.get(
+      denops,
       "pomodoro_long_break_sign",
       defaultLongBreakSign,
     );
-    const pauseSign = await vim.g.get(
+    const pauseSign = await vars.get(
+      denops,
       "pomodoro_pause_sign",
       defaultPauseSign,
     );
-    const notificationTitle = await vim.g.get(
+    const notificationTitle = await vars.get(
+      denops,
       "pomodoro_notification_title",
       defaultNotificationTitle,
     );

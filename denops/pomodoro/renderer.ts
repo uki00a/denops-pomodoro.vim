@@ -1,18 +1,21 @@
-import { Vim } from "./deps.ts";
+import type { Denops, VariableHelper } from "./deps.ts";
 
 export interface Renderer {
   render(sign: string, remaining: number): Promise<void>;
 }
 
 class VimRenderer implements Renderer {
-  #vim: Vim;
+  #denops: Denops;
+  #vars: VariableHelper;
 
-  constructor(vim: Vim) {
-    this.#vim = vim;
+  constructor(denops: Denops, vars: VariableHelper) {
+    this.#denops = denops;
+    this.#vars = vars;
   }
 
   async render(sign: string, remaining: number): Promise<void> {
-    await this.#vim.g.set(
+    await this.#vars.set(
+      this.#denops,
       "pomodoro_timer_status",
       sign + " " + makeStatusline(remaining),
     );
@@ -27,6 +30,6 @@ function makeStatusline(remaining: number): string {
   }`;
 }
 
-export function createRenderer(vim: Vim): Renderer {
-  return new VimRenderer(vim);
+export function createRenderer(denops: Denops, vars: VariableHelper): Renderer {
+  return new VimRenderer(denops, vars);
 }

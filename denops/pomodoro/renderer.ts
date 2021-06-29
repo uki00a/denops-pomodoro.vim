@@ -1,4 +1,4 @@
-import { Vim } from "./deps.ts";
+import type { Vim } from "./vim.ts";
 
 export interface Renderer {
   render(sign: string, remaining: number): Promise<void>;

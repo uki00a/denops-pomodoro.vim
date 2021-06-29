@@ -1,12 +1,16 @@
-import { main } from "./deps.ts";
+import type { Denops } from "./deps.ts";
 import { createNotifier } from "./notifiers.ts";
 import { Pomodoro } from "./pomodoro.ts";
 import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 import { createVimConfig } from "./config.ts";
+import { createVim } from "./vim.ts";
 
-main(async ({ vim }) => {
+export async function main(denops: Denops): Promise<void> {
   let pomodoro: Pomodoro | null = null;
+
+  const vim = createVim(denops);
+
   vim.register({
     async notify(): Promise<void> {
       const notifier = createNotifier();
@@ -40,9 +44,9 @@ main(async ({ vim }) => {
   });
 
   await vim.execute([
-    `command! DenopsNotify call denops#notify("${vim.name}", "notify", [])`,
-    `command! PomodoroStart call denops#notify("${vim.name}", "start", [])`,
-    `command! PomodoroStop call denops#notify("${vim.name}", "stop", [])`,
-    `command! PomodoroResume call denops#notify("${vim.name}", "resume", [])`,
+    `command! DenopsNotify call denops#notify("${denops.name}", "notify", [])`,
+    `command! PomodoroStart call denops#notify("${denops.name}", "start", [])`,
+    `command! PomodoroStop call denops#notify("${denops.name}", "stop", [])`,
+    `command! PomodoroResume call denops#notify("${denops.name}", "resume", [])`,
   ]);
-});
+}

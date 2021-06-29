@@ -1,5 +1,5 @@
 import { ensureNumber, ensureString } from "./deps.ts";
-import type { Vim } from "./deps.ts";
+import type { Vim } from "./vim.ts";
 import { MINUTE } from "./util.ts";
 
 const defaultWorkMinutes = 25;
@@ -25,7 +25,9 @@ export interface Config {
   reload(): Promise<void>;
 }
 
-export async function createVimConfig(vim: Vim): Promise<Config> {
+export async function createVimConfig(
+  vim: Vim,
+): Promise<Config> {
   async function reload(): Promise<void> {
     const workMinutes = await vim.g.get(
       "pomodoro_work_minutes",

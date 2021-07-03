@@ -16,15 +16,18 @@ export async function main(denops: Denops): Promise<void> {
   vim.register({
     async start(): Promise<void> {
       if (pomodoro) {
-        pomodoro.pause();
+        await pomodoro.pause();
       }
       pomodoro = await createPomodoro(vim);
-      do {
-        await Promise.any([
-          pomodoro.start(),
-          disposed,
-        ]);
-      } while (!pomodoro.isPaused());
+      // To prevent timeout errors, long-running code is enclosed in an anonymous function.
+      (async () => {
+        do {
+          await Promise.any([
+            pomodoro.start(),
+            disposed,
+          ]);
+        } while (!pomodoro.isPaused());
+      })();
     },
     async pause(): Promise<void> {
       if (pomodoro) {

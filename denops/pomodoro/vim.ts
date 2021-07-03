@@ -26,6 +26,8 @@ export interface Vim {
   // TODO: Add more namespaces
   g: Variables;
 
+  name: string;
+
   register(dispatcher: Denops["dispatcher"]): void;
   execute(commands: string[] | string): Promise<void>;
 }
@@ -33,6 +35,7 @@ export interface Vim {
 export function createVim(denops: Denops): Vim {
   return {
     g: new Variables(denops, vars.g),
+    name: denops.name,
     register(dispatcher: Denops["dispatcher"]) {
       denops.dispatcher = dispatcher;
     },

@@ -8,7 +8,7 @@ denops-pomodoro.vim is a Vim plugin for Pomodoro technique.
 - `PomodoroPause`: pauses the timer
 - `PomodoroResume`: resumes the paused timer
 - `PomodoroReset`: resets the timer
-- `PomodoroEcho`: echoes the remaining time.
+- `PomodoroEcho`: echoes the remaining time
 
 ## vim-airline integration
 

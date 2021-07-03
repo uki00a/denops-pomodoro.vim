@@ -94,6 +94,7 @@ export class Pomodoro {
     ) {
       this.#renderCurrentState(remaining);
     }
+    this.#renderCurrentState(0);
   }
 
   #renderCurrentState(remaining: number): Promise<void> {

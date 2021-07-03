@@ -38,17 +38,22 @@ Deno.test("Pomodoro#start", async () => {
       [config.workSign, 3000],
       [config.workSign, 2000],
       [config.workSign, 1000],
+      [config.workSign, 0],
       [config.shortBreakSign, 2000],
       [config.shortBreakSign, 1000],
+      [config.shortBreakSign, 0],
       [config.workSign, 3000],
       [config.workSign, 2000],
       [config.workSign, 1000],
+      [config.workSign, 0],
       [config.shortBreakSign, 2000],
       [config.shortBreakSign, 1000],
+      [config.shortBreakSign, 0],
       [config.longBreakSign, 4000],
       [config.longBreakSign, 3000],
       [config.longBreakSign, 2000],
       [config.longBreakSign, 1000],
+      [config.longBreakSign, 0],
     ]);
   }
 });

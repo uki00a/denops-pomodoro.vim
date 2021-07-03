@@ -6,10 +6,12 @@ import { createRenderer } from "./renderer.ts";
 import { createTimer } from "./timer.ts";
 import { createVimConfig } from "./config.ts";
 import { createVim } from "./vim.ts";
+import type { Vim } from "./vim.ts";
 
 export async function main(denops: Denops): Promise<void> {
   const vim = createVim(denops);
   let pomodoro: Pomodoro | null = null;
+  let disposed = deferred<void>();
 
   vim.register({
     async start(): Promise<void> {

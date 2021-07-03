@@ -16,7 +16,7 @@ export async function main(denops: Denops): Promise<void> {
   vim.register({
     async start(): Promise<void> {
       if (pomodoro) {
-        pomodoro.stop();
+        pomodoro.pause();
       }
       pomodoro = await createPomodoro(vim);
       do {

@@ -71,7 +71,7 @@ export class Pomodoro {
     return this.#renderCurrentState(this.#config.workMinutes);
   }
 
-  isStopped(): boolean {
+  isPaused(): boolean {
     return this.#round === "pause";
   }
 

@@ -2,7 +2,7 @@ import { deferred } from "./deps.ts";
 
 export interface Timer {
   start(duration?: number): AsyncIterableIterator<number>;
-  stop(): void;
+  pause(): void;
   resume(): void;
   remaining(): number;
 }
@@ -28,7 +28,7 @@ export function createTimer(
       currentPromise = deferred<IteratorResult>();
     } else {
       isStarted = false;
-      stop();
+      pause();
       currentPromise.resolve({ done: true, value: remaining });
       currentPromise = deferred<IteratorResult>();
     }
@@ -54,7 +54,7 @@ export function createTimer(
     return iter;
   }
 
-  function stop(): void {
+  function pause(): void {
     if (timerID) {
       clearInterval(timerID);
       timerID = null;
@@ -69,7 +69,7 @@ export function createTimer(
 
   const timer = {
     start,
-    stop,
+    pause,
     resume,
     remaining(): number {
       return remaining;

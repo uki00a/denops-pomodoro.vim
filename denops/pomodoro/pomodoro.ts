@@ -49,10 +49,10 @@ export class Pomodoro {
     this.#round = "done";
   }
 
-  stop(): Promise<void> {
+  pause(): Promise<void> {
     this.#roundBeforeStop = this.#round;
     this.#round = "pause";
-    this.#timer.stop();
+    this.#timer.pause();
     return this.#renderCurrentState(this.#timer.remaining());
   }
 
@@ -66,12 +66,12 @@ export class Pomodoro {
   }
 
   reset(): Promise<void> {
-    this.#timer.stop();
+    this.#timer.pause();
     this.#round = "pause";
     return this.#renderCurrentState(this.#config.workMinutes);
   }
 
-  isStopped(): boolean {
+  isPaused(): boolean {
     return this.#round === "pause";
   }
 

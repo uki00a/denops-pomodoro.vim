@@ -16,7 +16,7 @@ export async function main(denops: Denops): Promise<void> {
   vim.register({
     async start(): Promise<void> {
       if (pomodoro) {
-        pomodoro.stop();
+        pomodoro.pause();
       }
       pomodoro = await createPomodoro(vim);
       do {
@@ -24,11 +24,11 @@ export async function main(denops: Denops): Promise<void> {
           pomodoro.start(),
           disposed,
         ]);
-      } while (!pomodoro.isStopped());
+      } while (!pomodoro.isPaused());
     },
-    async stop(): Promise<void> {
+    async pause(): Promise<void> {
       if (pomodoro) {
-        await pomodoro.stop();
+        await pomodoro.pause();
       }
     },
     async resume(): Promise<void> {
@@ -47,7 +47,7 @@ export async function main(denops: Denops): Promise<void> {
 
   await vim.execute([
     `command! PomodoroStart call denops#notify("${vim.name}", "start", [])`,
-    `command! PomodoroStop call denops#notify("${vim.name}", "stop", [])`,
+    `command! PomodoroPause call denops#notify("${vim.name}", "pause", [])`,
     `command! PomodoroResume call denops#notify("${vim.name}", "resume", [])`,
     `command! PomodoroReset call denops#notify("${vim.name}", "reset", [])`,
   ]);

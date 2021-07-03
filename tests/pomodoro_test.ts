@@ -14,7 +14,7 @@ Deno.test("Pomodoro#start", async () => {
 
   await pomodoro.start();
 
-  assert(!pomodoro.isStopped());
+  assert(!pomodoro.isPaused());
   {
     const { calls } = td.explain(notifier.notify);
     const argsList = calls.map((x) => x.args);
@@ -53,7 +53,7 @@ Deno.test("Pomodoro#start", async () => {
   }
 });
 
-Deno.test("Pomodoro#stop", async () => {
+Deno.test("Pomodoro#pause", async () => {
   const config = createConfig();
   const timer = createTimer();
   const renderer = td.object<Renderer>();
@@ -61,8 +61,8 @@ Deno.test("Pomodoro#stop", async () => {
   const pomodoro = new Pomodoro(config, timer, notifier, renderer);
   pomodoro.start();
   await delay(1000);
-  await pomodoro.stop();
-  assert(pomodoro.isStopped());
+  await pomodoro.pause();
+  assert(pomodoro.isPaused());
 
   const remaining = timer.remaining();
   const lastCall = last(td.explain(renderer.render).calls);
@@ -82,7 +82,7 @@ Deno.test("Pomodoro#reset", async () => {
   await pomodoro.reset();
 
   const lastCall = last(td.explain(renderer.render).calls);
-  assert(pomodoro.isStopped());
+  assert(pomodoro.isPaused());
   assertEquals(lastCall.args, [config.pauseSign, config.workMinutes]);
 });
 
@@ -94,17 +94,17 @@ Deno.test("Pomodoro#resume", async () => {
   const pomodoro = new Pomodoro(config, timer, notifier, renderer);
   pomodoro.start();
   await delay(1000);
-  await pomodoro.stop();
+  await pomodoro.pause();
   const remaining = timer.remaining();
   await pomodoro.resume();
   await delay(1000);
   try {
     const lastCall = last(td.explain(renderer.render).calls);
-    assert(!pomodoro.isStopped());
+    assert(!pomodoro.isPaused());
     assert(timer.remaining() < remaining);
     assertEquals(lastCall.args[0], config.workSign);
   } finally {
-    await pomodoro.stop();
+    await pomodoro.pause();
   }
 });
 

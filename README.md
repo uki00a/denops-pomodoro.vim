@@ -4,14 +4,15 @@ denops-pomodoro.vim is a Vim plugin for Pomodoro technique.
 
 ## Commands
 
-* `PomodoroStart`: starts the timer
-* `PomodoroStop`: pauses the timer
-* `PomodoroResume`: resumes the paused timer
-* `PomodoroReset`: resets the timer
+- `PomodoroStart`: starts the timer
+- `PomodoroPause`: pauses the timer
+- `PomodoroResume`: resumes the paused timer
+- `PomodoroReset`: resets the timer
 
 ## vim-airline integration
 
-denops-pomodoro.vim provides [vim-airline](https://github.com/vim-airline/vim-airline) integration.
+denops-pomodoro.vim provides
+[vim-airline](https://github.com/vim-airline/vim-airline) integration.
 
 ```vim
 function! s:airline_after_init() abort

@@ -1,4 +1,5 @@
 import type { Denops } from "./deps.ts";
+import { deferred } from "./deps.ts";
 import { createNotifier } from "./notifiers.ts";
 import { Pomodoro } from "./pomodoro.ts";
 import { createRenderer } from "./renderer.ts";
@@ -7,46 +8,53 @@ import { createVimConfig } from "./config.ts";
 import { createVim } from "./vim.ts";
 
 export async function main(denops: Denops): Promise<void> {
+  const vim = createVim(denops);
   let pomodoro: Pomodoro | null = null;
 
-  const vim = createVim(denops);
-
   vim.register({
-    async notify(): Promise<void> {
-      const notifier = createNotifier();
-      const title = "Test";
-      const message = "Hello!";
-      await notifier.notify(title, message);
-    },
     async start(): Promise<void> {
       if (pomodoro) {
         pomodoro.stop();
       }
-      const config = await createVimConfig(vim);
-      const timer = createTimer(config.workMinutes);
-      const notifier = createNotifier();
-      const renderer = createRenderer(vim);
-      pomodoro = new Pomodoro(config, timer, notifier, renderer);
-      await pomodoro.start();
+      pomodoro = await createPomodoro(vim);
+      do {
+        await Promise.any([
+          pomodoro.start(),
+          disposed,
+        ]);
+      } while (!pomodoro.isStopped());
     },
-    stop(): Promise<void> {
+    async stop(): Promise<void> {
       if (pomodoro) {
-        pomodoro.stop();
+        await pomodoro.stop();
       }
-      return Promise.resolve();
     },
-    resume(): Promise<void> {
+    async resume(): Promise<void> {
       if (pomodoro) {
-        pomodoro.resume();
+        await pomodoro.resume();
       }
-      return Promise.resolve();
+    },
+    async reset(): Promise<void> {
+      if (pomodoro) {
+        await pomodoro.reset();
+        disposed.resolve();
+        disposed = deferred<void>();
+      }
     },
   });
 
   await vim.execute([
-    `command! DenopsNotify call denops#notify("${denops.name}", "notify", [])`,
-    `command! PomodoroStart call denops#notify("${denops.name}", "start", [])`,
-    `command! PomodoroStop call denops#notify("${denops.name}", "stop", [])`,
-    `command! PomodoroResume call denops#notify("${denops.name}", "resume", [])`,
+    `command! PomodoroStart call denops#notify("${vim.name}", "start", [])`,
+    `command! PomodoroStop call denops#notify("${vim.name}", "stop", [])`,
+    `command! PomodoroResume call denops#notify("${vim.name}", "resume", [])`,
+    `command! PomodoroReset call denops#notify("${vim.name}", "reset", [])`,
   ]);
+}
+
+async function createPomodoro(vim: Vim): Promise<Pomodoro> {
+  const config = await createVimConfig(vim);
+  const timer = createTimer(config.workMinutes);
+  const notifier = createNotifier();
+  const renderer = createRenderer(vim);
+  return new Pomodoro(config, timer, notifier, renderer);
 }

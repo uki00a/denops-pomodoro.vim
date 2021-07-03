@@ -2,21 +2,11 @@ import { Pomodoro } from "../denops/pomodoro/pomodoro.ts";
 import { createTimer } from "../denops/pomodoro/timer.ts";
 import { Notifier } from "../denops/pomodoro/notifiers.ts";
 import { Renderer } from "../denops/pomodoro/renderer.ts";
-import { assertEquals, td } from "./deps.ts";
+import type { Config } from "../denops/pomodoro/config.ts";
+import { assert, assertEquals, delay, td } from "./deps.ts";
 
 Deno.test("Pomodoro#start", async () => {
-  const config = Object.freeze({
-    workMinutes: 3000, // 3 seconds
-    shortBreakMinutes: 2000, // 2 seconds
-    longBreakMinutes: 4000, // 4 seconds
-    stepsPerSet: 2,
-    workSign: "W",
-    shortBreakSign: "S",
-    longBreakSign: "L",
-    pauseSign: "P",
-    notificationTitle: "Pomodoro Timer",
-    reload: () => Promise.resolve(), // NOOP
-  });
+  const config = createConfig();
   const timer = createTimer();
   const renderer = td.object<Renderer>();
   const notifier = td.object<Notifier>();
@@ -24,6 +14,7 @@ Deno.test("Pomodoro#start", async () => {
 
   await pomodoro.start();
 
+  assert(!pomodoro.isStopped());
   {
     const { calls } = td.explain(notifier.notify);
     const argsList = calls.map((x) => x.args);
@@ -61,3 +52,56 @@ Deno.test("Pomodoro#start", async () => {
     ]);
   }
 });
+
+Deno.test("Pomodoro#stop", async () => {
+  const config = createConfig();
+  const timer = createTimer();
+  const renderer = td.object<Renderer>();
+  const notifier = td.object<Notifier>();
+  const pomodoro = new Pomodoro(config, timer, notifier, renderer);
+  pomodoro.start();
+  await delay(1000);
+  await pomodoro.stop();
+  assert(pomodoro.isStopped());
+
+  const remaining = timer.remaining();
+  const lastCall = last(td.explain(renderer.render).calls);
+  await delay(1000);
+  assertEquals(remaining, timer.remaining());
+  assertEquals(lastCall.args, [config.pauseSign, remaining]);
+});
+
+Deno.test("Pomodoro#reset", async () => {
+  const config = createConfig();
+  const timer = createTimer();
+  const renderer = td.object<Renderer>();
+  const notifier = td.object<Notifier>();
+  const pomodoro = new Pomodoro(config, timer, notifier, renderer);
+  pomodoro.start();
+  await delay(1000);
+  await pomodoro.reset();
+
+  const lastCall = last(td.explain(renderer.render).calls);
+  assert(pomodoro.isStopped());
+  assertEquals(lastCall.args, [config.pauseSign, config.workMinutes]);
+});
+
+function createConfig(override: Partial<Config> = {}): Config {
+  return Object.freeze({
+    workMinutes: 3000, // 3 seconds
+    shortBreakMinutes: 2000, // 2 seconds
+    longBreakMinutes: 4000, // 4 seconds
+    stepsPerSet: 2,
+    workSign: "W",
+    shortBreakSign: "S",
+    longBreakSign: "L",
+    pauseSign: "P",
+    notificationTitle: "Pomodoro Timer",
+    reload: () => Promise.resolve(), // NOOP
+    ...override,
+  });
+}
+
+function last<T>(array: Array<T>): T {
+  return array[array.length - 1];
+}

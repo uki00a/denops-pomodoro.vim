@@ -3,7 +3,12 @@ import type { Notifier } from "./notifiers.ts";
 import type { Renderer } from "./renderer.ts";
 import type { Config } from "./config.ts";
 
-type Round = "work" | "short-break" | "long-break" | "pause";
+type Round =
+  | "work"
+  | "short-break"
+  | "long-break"
+  | "pause"
+  | "done";
 
 export class Pomodoro {
   #config: Config;
@@ -40,16 +45,27 @@ export class Pomodoro {
       `It's time to take a long break!${this.#config.longBreakSign}`,
     );
     await this.#startLongBreak();
+    this.#round = "done";
   }
 
-  stop(): void {
+  stop(): Promise<void> {
     this.#round = "pause";
     this.#timer.stop();
-    this.#renderCurrentState(this.#timer.remaining());
+    return this.#renderCurrentState(this.#timer.remaining());
   }
 
   resume(): void {
     this.#timer.resume();
+  }
+
+  reset(): Promise<void> {
+    this.#timer.stop();
+    this.#round = "pause";
+    return this.#renderCurrentState(this.#config.workMinutes);
+  }
+
+  isStopped(): boolean {
+    return this.#round === "pause";
   }
 
   #startWork(): Promise<void> {
@@ -73,9 +89,9 @@ export class Pomodoro {
     }
   }
 
-  #renderCurrentState(remaining: number): void {
+  #renderCurrentState(remaining: number): Promise<void> {
     const sign = this.#signForCurrentRound();
-    this.#renderer.render(sign, remaining);
+    return this.#renderer.render(sign, remaining);
   }
 
   #signForCurrentRound(): string {
@@ -87,6 +103,7 @@ export class Pomodoro {
       case "long-break":
         return this.#config.longBreakSign;
       case "pause":
+      case "done":
         return this.#config.pauseSign;
     }
   }

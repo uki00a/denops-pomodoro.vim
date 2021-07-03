@@ -16,6 +16,7 @@ export class Pomodoro {
   #notifier: Notifier;
   #renderer: Renderer;
   #round: Round;
+  #roundBeforeStop?: Round;
 
   constructor(
     config: Config,
@@ -49,13 +50,19 @@ export class Pomodoro {
   }
 
   stop(): Promise<void> {
+    this.#roundBeforeStop = this.#round;
     this.#round = "pause";
     this.#timer.stop();
     return this.#renderCurrentState(this.#timer.remaining());
   }
 
-  resume(): void {
+  resume(): Promise<void> {
+    if (this.#roundBeforeStop) {
+      this.#round = this.#roundBeforeStop;
+      this.#roundBeforeStop = undefined;
+    }
     this.#timer.resume();
+    return this.#renderCurrentState(this.#timer.remaining());
   }
 
   reset(): Promise<void> {

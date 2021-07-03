@@ -86,6 +86,28 @@ Deno.test("Pomodoro#reset", async () => {
   assertEquals(lastCall.args, [config.pauseSign, config.workMinutes]);
 });
 
+Deno.test("Pomodoro#resume", async () => {
+  const config = createConfig();
+  const timer = createTimer();
+  const renderer = td.object<Renderer>();
+  const notifier = td.object<Notifier>();
+  const pomodoro = new Pomodoro(config, timer, notifier, renderer);
+  pomodoro.start();
+  await delay(1000);
+  await pomodoro.stop();
+  const remaining = timer.remaining();
+  await pomodoro.resume();
+  await delay(1000);
+  try {
+    const lastCall = last(td.explain(renderer.render).calls);
+    assert(!pomodoro.isStopped());
+    assert(timer.remaining() < remaining);
+    assertEquals(lastCall.args[0], config.workSign);
+  } finally {
+    await pomodoro.stop();
+  }
+});
+
 function createConfig(override: Partial<Config> = {}): Config {
   return Object.freeze({
     workMinutes: 3000, // 3 seconds

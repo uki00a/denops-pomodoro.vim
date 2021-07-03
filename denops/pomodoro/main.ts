@@ -45,7 +45,7 @@ export async function main(denops: Denops): Promise<void> {
     },
     async echo(): Promise<void> {
       await vim.execute(`echo g:pomodoro_timer_status`);
-    }
+    },
   });
 
   await vim.execute([
@@ -53,7 +53,7 @@ export async function main(denops: Denops): Promise<void> {
     `command! PomodoroPause call denops#notify("${vim.name}", "pause", [])`,
     `command! PomodoroResume call denops#notify("${vim.name}", "resume", [])`,
     `command! PomodoroReset call denops#notify("${vim.name}", "reset", [])`,
-    `command! PomodoroEcho call denops#notify("${vim.name}", "echo", [])`
+    `command! PomodoroEcho call denops#notify("${vim.name}", "echo", [])`,
   ]);
 }
 

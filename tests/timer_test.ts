@@ -22,7 +22,7 @@ Deno.test("Timer.start: call multiple times", async () => {
   assertEquals(results, [2000, 1000, 3000, 2000, 1000]);
 });
 
-Deno.test("Timer.resume & stop", async () => {
+Deno.test("Timer.resume & pause", async () => {
   const startedAt = new Date();
   const duration = 3000;
   const interval = 1000;
@@ -35,7 +35,7 @@ Deno.test("Timer.resume & stop", async () => {
     }
   })();
   setTimeout(() => {
-    timer.stop();
+    timer.pause();
     setTimeout(() => {
       snapshot.push([...results]);
       timer.resume();
@@ -55,6 +55,6 @@ Deno.test("Timer.remaining", async () => {
   assertEquals(timer.remaining(), duration);
   const iter = timer.start();
   await iter.next();
-  timer.stop();
+  timer.pause();
   assertEquals(timer.remaining(), duration - interval);
 });

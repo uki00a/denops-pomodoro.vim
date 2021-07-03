@@ -5,7 +5,7 @@ denops-pomodoro.vim is a Vim plugin for Pomodoro technique.
 ## Commands
 
 * `PomodoroStart`: starts the timer
-* `PomodoroStop`: pauses the timer
+* `PomodoroPause`: pauses the timer
 * `PomodoroResume`: resumes the paused timer
 * `PomodoroReset`: resets the timer
 

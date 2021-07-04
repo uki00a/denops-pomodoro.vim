@@ -10,6 +10,11 @@ denops-pomodoro.vim is a Vim plugin for Pomodoro technique.
 - `PomodoroReset`: resets the timer
 - `PomodoroEcho`: echoes the remaining time
 
+## Desktop notifications
+
+This plugin uses [deno-notifier.ts](https://github.com/uki00a/deno-notifier.ts)
+for sending desktop notifications.
+
 ## vim-airline integration
 
 denops-pomodoro.vim provides

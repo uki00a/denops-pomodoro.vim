@@ -6,5 +6,5 @@ export {
   ensureNumber,
   ensureString,
 } from "https://deno.land/x/unknownutil@v0.1.1/mod.ts";
-export { readAll } from "https://deno.land/std@0.97.0/io/util.ts";
+export { notify } from "https://deno.land/x/notifier@v0.1.1/mod.ts";
 export { deferred } from "https://deno.land/std@0.97.0/async/deferred.ts";
